@@ -367,6 +367,16 @@ public abstract class GameWorld extends Box2dGameWorld implements WorldInputAdap
     /**
      * Enter this world or interior
      */
+    /**
+     * @return background music for this world; interiors keep their parent's music
+     */
+    protected me.vrekt.oasis.asset.sound.MusicPlayer.Track musicTrack() {
+        return this instanceof me.vrekt.oasis.world.tutorial.MyceliaWorld
+                || (this instanceof GameWorldInterior interior && interior.getParentWorld() instanceof me.vrekt.oasis.world.tutorial.MyceliaWorld)
+                ? me.vrekt.oasis.asset.sound.MusicPlayer.Track.GROVE
+                : me.vrekt.oasis.asset.sound.MusicPlayer.Track.VILLAGE;
+    }
+
     public void enterWorld() {
         if (!isWorldLoaded) throw new UnsupportedOperationException("World is not loaded.");
         updateEnteringWorldState();
@@ -376,6 +386,7 @@ public abstract class GameWorld extends Box2dGameWorld implements WorldInputAdap
      * Update the player state + world state
      */
     protected void updateEnteringWorldState() {
+        me.vrekt.oasis.asset.sound.MusicPlayer.get().play(musicTrack());
         player.updateWorldState(this);
         updateRendererMap();
 

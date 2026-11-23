@@ -129,13 +129,28 @@ public final class SettingsWindowGui extends Gui {
         autoSaveSliderContainer.add(autoSaveIntervalLabel).padRight(4f);
         autoSaveSliderContainer.add(autoSaveSlider);
 
-        volumeLabel = new VisLabel("SFX Volume: " + OasisGameSettings.VOLUME * 100, Styles.getMediumWhite());
+        volumeLabel = new VisLabel("SFX Volume: " + Math.round(OasisGameSettings.VOLUME * 100), Styles.getMediumWhite());
         final VisSlider volumeSlider = new VisSlider(0.0f, 100.0f, 1.0f, false, sliderStyle);
         volumeSlider.setValue(OasisGameSettings.VOLUME * 100.0f);
         volumeSliderContainer.add(volumeLabel).padRight(4f);
         volumeSliderContainer.add(volumeSlider);
 
         handleSliderComponents(entityUpdateDistanceSlider, autoSaveSlider, volumeSlider);
+
+        final VisTable musicSliderContainer = new VisTable();
+        musicSliderContainer.setBackground(Styles.getTheme());
+        final VisLabel musicLabel = new VisLabel("Music Volume: " + Math.round(DisplaySettings.musicVolume() * 100), Styles.getMediumWhite());
+        final VisSlider musicSlider = new VisSlider(0.0f, 100.0f, 1.0f, false, sliderStyle);
+        musicSlider.setValue(DisplaySettings.musicVolume() * 100.0f);
+        musicSliderContainer.add(musicLabel).padRight(4f);
+        musicSliderContainer.add(musicSlider);
+        musicSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                DisplaySettings.setMusicVolume(musicSlider.getValue() / 100.0f);
+                musicLabel.setText("Music Volume: " + Math.round(musicSlider.getValue()));
+            }
+        });
 
         gameSettingsTable.add(multiplayerGameContainer).fillX();
         gameSettingsTable.row().padTop(4f);
@@ -152,6 +167,8 @@ public final class SettingsWindowGui extends Gui {
         gameSettingsTable.add(entityUpdateDistanceContainer).fillX();
         gameSettingsTable.row().padTop(4f);
         gameSettingsTable.add(volumeSliderContainer).fillX();
+        gameSettingsTable.row().padTop(4f);
+        gameSettingsTable.add(musicSliderContainer).fillX();
 
         final VisImageTextButton backButton = new VisImageTextButton("Go Back", Styles.getImageTextButtonStyle());
         addHoverComponents(backButton, new Color(64 / 255f, 64 / 255f, 64 / 255f, 1), Color.WHITE, () -> guiManager.showParentGui(this));
@@ -233,7 +250,7 @@ public final class SettingsWindowGui extends Gui {
         volumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                volumeLabel.setText("SFX Volume: " + volumeSlider.getValue());
+                volumeLabel.setText("SFX Volume: " + Math.round(volumeSlider.getValue()));
                 OasisGameSettings.VOLUME = volumeSlider.getValue() / 100.0f;
             }
         });

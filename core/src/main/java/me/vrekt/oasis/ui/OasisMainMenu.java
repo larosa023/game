@@ -82,6 +82,7 @@ public final class OasisMainMenu extends ScreenAdapter {
     @Override
     public void show() {
         game.multiplexer().addProcessor(stage);
+        me.vrekt.oasis.asset.sound.MusicPlayer.get().play(me.vrekt.oasis.asset.sound.MusicPlayer.Track.TITLE);
     }
 
     @Override

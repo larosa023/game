@@ -528,6 +528,7 @@ public final class OasisGame extends Game {
 
     @Override
     public void render() {
+        me.vrekt.oasis.asset.sound.MusicPlayer.get().update(Gdx.graphics.getDeltaTime());
         if (screen != null) {
             screen.render(Gdx.graphics.getDeltaTime());
         } else {

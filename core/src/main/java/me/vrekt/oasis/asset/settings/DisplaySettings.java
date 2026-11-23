@@ -42,6 +42,18 @@ public final class DisplaySettings {
         setFullscreen(!isFullscreen());
     }
 
+    /**
+     * @return music volume 0..1 (default 0.6)
+     */
+    public static float musicVolume() {
+        return prefs().getFloat("music_volume", 0.6f);
+    }
+
+    public static void setMusicVolume(float volume) {
+        prefs().putFloat("music_volume", Math.max(0f, Math.min(1f, volume))).flush();
+        me.vrekt.oasis.asset.sound.MusicPlayer.get().refreshVolume();
+    }
+
     public static void setShowFps(boolean show) {
         OasisGameSettings.SHOW_FPS = show;
         prefs().putBoolean("show_fps", show).flush();
