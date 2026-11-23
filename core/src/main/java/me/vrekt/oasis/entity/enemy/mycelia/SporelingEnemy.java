@@ -192,6 +192,7 @@ public final class SporelingEnemy extends EntityEnemy {
         stateMachine.update(delta);
 
         if (isDead() && !stateMachine.isInSameState(AnimationProcessingState.STATE_ID)) {
+            me.vrekt.oasis.questing.quests.mycelia.SporesOfTheGroveQuest.onSporelingDefeated(player);
             // enter dead animation state
             stateMachine.enter(dyingState);
             this.isDying = true;

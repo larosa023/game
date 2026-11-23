@@ -112,6 +112,7 @@ public final class PlayerSP extends AbstractPlayer implements ResourceLoader, Dr
 
         loadArtifacts(playerSave.artifacts());
         loadQuests(playerSave.quests());
+        if (playerSave.completedQuests() != null) questManager.completedQuests().addAll(playerSave.completedQuests());
         loadEffects(playerSave.effects());
     }
 

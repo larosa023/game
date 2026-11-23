@@ -13,6 +13,13 @@ public enum QuestType {
         public Quest create() {
             return new ANewHorizonQuest();
         }
+    },
+
+    SPORES_OF_THE_GROVE {
+        @Override
+        public Quest create() {
+            return new me.vrekt.oasis.questing.quests.mycelia.SporesOfTheGroveQuest();
+        }
     };
 
     public abstract Quest create();

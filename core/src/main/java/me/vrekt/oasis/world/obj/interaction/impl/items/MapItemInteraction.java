@@ -155,6 +155,7 @@ public final class MapItemInteraction extends MouseableAbstractInteractableWorld
      */
     private void take() {
         item.addToPlayer(world.player());
+        me.vrekt.oasis.questing.quests.mycelia.SporesOfTheGroveQuest.onItemPickedUp(world.player(), item.type());
         Pooling.freeHint(effect);
         effect = null;
 

@@ -35,6 +35,7 @@ public final class PortalInteraction extends KeyableAbstractInteractableMouseObj
         lastInteraction = GameManager.tick();
         GameManager.playSound(Sounds.TELEPORT, 0.1f, -3.0f, 0.0f);
         GameManager.gui().getInteractionsComponent().hide();
+        if (targetWorld == 0) me.vrekt.oasis.questing.quests.mycelia.SporesOfTheGroveQuest.onReturnHome(world.player());
         GameManager.game().worldManager().transferTo(world.player(), targetWorld);
     }
 }

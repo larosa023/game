@@ -50,6 +50,10 @@ public final class PlayerSave implements Disposable {
     private List<PlayerQuests> activeQuests;
 
     @Expose
+    @SerializedName("completed_quests")
+    private List<QuestType> completedQuests;
+
+    @Expose
     @SerializedName("active_effects")
     private LinkedList<Effect> activeEffects;
 
@@ -99,6 +103,7 @@ public final class PlayerSave implements Disposable {
      * @param player player
      */
     private void saveQuests(PlayerSP player) {
+        this.completedQuests = new ArrayList<>(player.getQuestManager().completedQuests());
         this.activeQuests = new ArrayList<>();
         for (Map.Entry<QuestType, Quest> entry : player.getQuestManager().getActiveQuests().entrySet()) {
             this.activeQuests.add(new PlayerQuests(
@@ -147,6 +152,10 @@ public final class PlayerSave implements Disposable {
     /**
      * @return active quests
      */
+    public List<QuestType> completedQuests() {
+        return completedQuests;
+    }
+
     public List<PlayerQuests> quests() {
         return activeQuests;
     }

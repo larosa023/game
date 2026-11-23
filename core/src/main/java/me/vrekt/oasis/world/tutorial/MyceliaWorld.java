@@ -34,6 +34,7 @@ public final class MyceliaWorld extends GameWorld {
         }
 
         renderer.getCamera().zoom = 0.8f;
+        me.vrekt.oasis.questing.quests.mycelia.SporesOfTheGroveQuest.onEnterGrove(player);
     }
 
     @Override
