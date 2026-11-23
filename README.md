@@ -9,7 +9,7 @@ Grab **Oasis-windows.zip** from the [latest release](../../releases/latest), unz
 ## Building
 - Run from source: `gradlew lwjgl3:run`
 - Build the Windows app: `gradlew lwjgl3:jpackageImage` (output in `lwjgl3/build/jpackage/Oasis`)
-- Pushing a tag like `v1.0.1` builds the exe on GitHub and publishes it as a release automatically.
+- Every push to `main` builds the exe on GitHub and publishes it as a new release automatically.
 
 # Features as of 6/13/24
 - Multiple worlds
