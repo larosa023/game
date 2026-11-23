@@ -209,6 +209,12 @@ public final class OasisGame extends Game {
         world.enterWorld();
 
         scheduleAutoSave(OasisGameSettings.AUTO_SAVE_INTERVAL_MINUTES * 60);
+
+        // developer shortcut for testing other worlds: -Doasis.devWorld=<id>
+        final String devWorld = System.getProperty("oasis.devWorld");
+        if (devWorld != null) {
+            Gdx.app.postRunnable(() -> worldManager.transferTo(player, Integer.parseInt(devWorld)));
+        }
     }
 
     /**

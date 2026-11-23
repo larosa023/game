@@ -45,6 +45,13 @@ public enum WorldInteractionType {
             return new PickableMushroomInteraction();
         }
     },
+    PORTAL("portal") {
+        @Override
+        public AbstractInteractableWorldObject create(GameWorld world, MapObject object) {
+            return new me.vrekt.oasis.world.obj.interaction.impl.misc.PortalInteraction(object);
+        }
+    },
+
     NONE("none");
 
     private final String type;

@@ -158,6 +158,16 @@ for comp in clusters(extras):
 
 for p in placed: print(p)
 
+# ---- portal to the Mycelic Grove in the east meadow -------------------------
+MYC_FIRST = NEW_FIRST + COLS * 11
+PX, PY = 44, 41
+for r in range(3):
+    for c in range(2):
+        put(PX + c, PY + r, MYC_FIRST + r * 12 + 9 + c)     # MyceliaExtras portal tiles
+        for name, g in layers:
+            if name not in GROUND_LAYERS: g[(PY + r) * W + PX + c] = 0
+placed.append(('portal', PX, PY))
+
 # ---- write back ------------------------------------------------------------
 def csv(g):
     return '\n' + '\n'.join(','.join(str(v) for v in g[r * W:(r + 1) * W]) + (',' if r < W - 1 else '') for r in range(W)) + '\n'
@@ -171,7 +181,7 @@ s = layer_re.sub(repl, s)
 for n in MISSING:
     s = re.sub(r'\s*<tileset firstgid="\d+" source="../asset/data/%s"/>' % re.escape(n), '', s)
 s = s.replace('<tileset firstgid="%d" source="../asset/data/9.tsx"/>' % FIRST['9.tsx'],
-              '<tileset firstgid="%d" source="../asset/data/9.tsx"/>\n <tileset firstgid="%d" source="../asset/data/OasisBuildings.tsx"/>' % (FIRST['9.tsx'], NEW_FIRST))
+              '<tileset firstgid="%d" source="../asset/data/9.tsx"/>\n <tileset firstgid="%d" source="../asset/data/OasisBuildings.tsx"/>\n <tileset firstgid="%d" source="../asset/data/MyceliaExtras.tsx"/>' % (FIRST['9.tsx'], NEW_FIRST, MYC_FIRST))
 
 # new Buildings layer right after Background3
 nid = int(re.search(r'nextlayerid="(\d+)"', s).group(1))
@@ -187,6 +197,23 @@ hx, hy, w, rr, wr = HOUSES['lyra'][:5]
 rect = '  <object id="%d" x="%d" y="%d" width="%d" height="%d"/>\n' % (oid, hx * 16 + 2, hy * 16 + 4, w * 16 - 4, (rr + wr) * 16 - 22)
 m = re.search(r'<objectgroup [^>]*name="Collision"[^>]*>\n', s)
 s = s[:m.end()] + rect + s[m.end():]
+
+# portal collision + interaction object
+oid += 1
+portal_coll = '  <object id="%d" x="%d" y="%d" width="%d" height="%d"/>\n' % (oid, PX * 16 + 2, (PY + 1) * 16, 28, 32)
+m = re.search(r'<objectgroup [^>]*name="Collision"[^>]*>\n', s)
+s = s[:m.end()] + portal_coll + s[m.end():]
+oid += 1
+portal_obj = ('  <object id="%d" name="portal" x="%d" y="%d" width="32" height="16">\n   <properties>\n'
+              '    <property name="interactable" type="bool" value="true"/>\n'
+              '    <property name="interaction_type" value="portal"/>\n'
+              '    <property name="interaction_range" type="float" value="4.5"/>\n'
+              '    <property name="portal_text" value="Enter the Mycelic Grove"/>\n'
+              '    <property name="target_world" type="int" value="1"/>\n'
+              '   </properties>\n  </object>\n') % (oid, PX * 16, (PY + 2) * 16)
+m = re.search(r'<objectgroup [^>]*name="WorldObjects"[^>]*>\n', s)
+s = s[:m.end()] + portal_obj + s[m.end():]
+s = re.sub(r'nextobjectid="\d+"', 'nextobjectid="%d"' % (oid + 1), s, count=1)
 
 open(MAP, 'w').write(s)
 print('first gid', NEW_FIRST, 'written')

@@ -27,6 +27,7 @@ public final class Entities {
         ENTITIES.put(BasicFishEntity.ENTITY_KEY, BasicFishEntity::new);
         ENTITIES.put(GrungyRoachEnemy.ENTITY_KEY, GrungyRoachEnemy::new);
         ENTITIES.put(ChickEntity.ENTITY_KEY, ChickEntity::new);
+        ENTITIES.put(me.vrekt.oasis.entity.enemy.mycelia.SporelingEnemy.ENTITY_KEY, me.vrekt.oasis.entity.enemy.mycelia.SporelingEnemy::new);
     }
 
     /**

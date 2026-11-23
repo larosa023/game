@@ -144,7 +144,7 @@ public final class PlayerInventoryGui extends InventoryGui {
 
         addItemActionButtonListener();
 
-        for (int i = 1; i < player.getInventory().getSize(); i++) {
+        for (int i = 1; i <= player.getInventory().getSize(); i++) {
             // (i - 1) for compatibility with splitting the table in rows of 3
             final InventoryUiComponent component = createSlotComponents((i - 1), (i - 1) < 6, false);
             guiSlots.add(new InventoryGuiSlot(guiManager, this, component, (i - 1)));
@@ -197,6 +197,8 @@ public final class PlayerInventoryGui extends InventoryGui {
     @Override
     public void update() {
         for (IntMap.Entry<Item> entry : player.getInventory().items()) {
+            // inventory can hold more slots than this GUI shows (e.g. hotbar extras); skip those
+            if (entry.key < 0 || entry.key >= guiSlots.size()) continue;
             final InventoryGuiSlot slot = guiSlots.get(entry.key);
             if (!entry.value.compare(slot.getLastItemKey())) {
                 slot.setOccupiedItem(entry.value);
