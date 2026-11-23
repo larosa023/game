@@ -34,6 +34,10 @@ jobs:
         shell: bash
         run: ./gradlew :lwjgl3:jpackageImage --no-daemon --stacktrace
 
+      - name: Test the packaged Java runtime has everything the game needs
+        shell: bash
+        run: lwjgl3/build/jpackage/Oasis/runtime/bin/java -cp lwjgl3/build/jpackage/Oasis/app/Oasis-1.0.0.jar me.vrekt.oasis.update.RuntimeSelfTest lwjgl3/build/jpackage/Oasis/app/Oasis-1.0.0.jar
+
       - name: Test the updater's install step
         shell: bash
         run: java -cp lwjgl3/build/lib/Oasis-1.0.0.jar me.vrekt.oasis.update.InstallerSelfTest

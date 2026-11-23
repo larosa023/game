@@ -1,5 +1,8 @@
-## What's new
-- **Music!** Oasis now has a soundtrack: a hopeful title theme, a bouncy village tune, and a slow, mysterious theme for the Mycelic Grove. Tracks cross-fade when you move between areas. Adjust it with the new **Music Volume** slider in Settings.
-- **New quest: Spores of the Grove.** It starts the first time you enter the Mycelic Grove. Defeat 4 Sporelings, gather 5 mushrooms, find what's hidden in the north-east corner, then head home through the portal. The reward is the **Staff of Earth**.
-- Finished quests are now saved, so they won't start over.
-- Volume numbers in Settings now show as whole numbers.
+## Fix: the game closed right after the splash screen
+The Windows version came with a cut-down copy of Java that was missing the part the updater uses to check for new versions, so the game crashed when the main menu opened. That part is now included.
+
+- Every build now runs the packaged game's Java against all of the game's code on a Windows machine before it's released, so this kind of crash can't ship again.
+- If the game ever does crash, it now writes a `crash.log` to `%APPDATA%\Oasis` that you can send over.
+- The update check can no longer stop the game from starting, even if it fails.
+
+**Coming from v1.0.6 or older:** download this version manually one more time, because the older versions crash before the update button appears. After this, updates work from the main menu.

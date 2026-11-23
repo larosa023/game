@@ -47,7 +47,7 @@ public final class OasisMainMenu extends ScreenAdapter {
     private final VisTable loadGameTable;
     // holds the "update available" button when there is one
     private final VisTable updateRow = new VisTable();
-    private final GameUpdater updater = new GameUpdater();
+    private GameUpdater updater;
     private boolean updating;
 
     public OasisMainMenu(OasisGame game) {
@@ -138,6 +138,13 @@ public final class OasisMainMenu extends ScreenAdapter {
      * Check GitHub for a newer version and, if there is one, show an update button.
      */
     private void checkForUpdates(VisImageTextButton.VisImageTextButtonStyle style) {
+        try {
+            updater = new GameUpdater();
+        } catch (Throwable throwable) {
+            // never let the updater stop the game from starting
+            GameLogging.exceptionThrown("OasisMainMenu", "Updater unavailable", throwable);
+            return;
+        }
         updater.checkAsync().thenAccept(update -> {
             if (update == null) return;
             Gdx.app.postRunnable(() -> showUpdateButton(update, style));
