@@ -56,12 +56,31 @@ public final class Asset implements Disposable {
         final TmxMapLoader mapLoader = new TmxMapLoader(new InternalFileHandleResolver());
         assetManager.setLoader(TiledMap.class, mapLoader);
 
-        assetManager.load(TUTORIAL_WORLD, TiledMap.class, new TmxMapLoader.Parameters());
-        assetManager.load(WRYNN_BASEMENT, TiledMap.class, new TmxMapLoader.Parameters());
-        assetManager.load(WRYNN_OFFICE, TiledMap.class, new TmxMapLoader.Parameters());
-        assetManager.load(MYCELIA_WORLD, TiledMap.class, new TmxMapLoader.Parameters());
-        assetManager.load(MYCELIA_SHOP, TiledMap.class, new TmxMapLoader.Parameters());
-        assetManager.load(HOUSE_2, TiledMap.class, new TmxMapLoader.Parameters());
+        loadMap(TUTORIAL_WORLD);
+        loadMap(WRYNN_BASEMENT);
+        loadMap(WRYNN_OFFICE);
+        loadMap(MYCELIA_WORLD);
+        loadMap(MYCELIA_SHOP);
+        loadMap(HOUSE_2);
+    }
+
+    /**
+     * Queue a map for loading, skipping (and logging) any that are missing so one absent map can't crash startup.
+     */
+    private void loadMap(String path) {
+        if (!Gdx.files.internal(path).exists()) {
+            GameLogging.warn("AssetManager", "Map missing, skipping: %s", path);
+            return;
+        }
+        assetManager.load(path, TiledMap.class, new TmxMapLoader.Parameters());
+    }
+
+    /**
+     * @param path map path
+     * @return {@code true} if the map was found and loaded
+     */
+    public boolean hasMap(String path) {
+        return assetManager.isLoaded(path);
     }
 
     /**

@@ -68,7 +68,7 @@ public final class WrynnEntity extends EntityInteractable {
                 .add(animationComponent);
         builder.dispose();
 
-        this.dialogue = EntityDialogueLoader.loadSync("assets/dialog/wrynn_dialog.json");
+        this.dialogue = EntityDialogueLoader.loadSync("dialog/wrynn_dialog.json");
         this.dialogue.setOwner(this);
         loadDialog();
 

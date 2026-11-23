@@ -23,9 +23,20 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      - name: Stamp version
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then v="${GITHUB_REF_NAME#v}"; else v="1.0.${{ github.run_number }}"; fi
+          echo "$v" > assets/version.txt
+          echo "Building version $v"
+
       - name: Build Oasis.exe
         shell: bash
         run: ./gradlew :lwjgl3:jpackageImage --no-daemon --stacktrace
+
+      - name: Test the updater's install step
+        shell: bash
+        run: java -cp lwjgl3/build/lib/Oasis-1.0.0.jar me.vrekt.oasis.update.InstallerSelfTest
 
       - name: Zip game
         shell: pwsh
@@ -47,6 +58,4 @@ jobs:
           target_commitish: ${{ github.sha }}
           make_latest: true
           files: Oasis-windows.zip
-          body: |
-            Windows build of Oasis. Download **Oasis-windows.zip**, unzip it anywhere, and run `Oasis\Oasis.exe`.
-            No Java install needed — it's bundled.
+          body_path: RELEASE_NOTES.md

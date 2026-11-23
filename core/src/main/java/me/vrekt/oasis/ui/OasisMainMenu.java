@@ -24,6 +24,8 @@ import me.vrekt.oasis.gui.Styles;
 import me.vrekt.oasis.save.GameSaveProperties;
 import me.vrekt.oasis.save.GameSaveSlotProperty;
 import me.vrekt.oasis.save.SaveManager;
+import me.vrekt.oasis.update.GameUpdater;
+import me.vrekt.oasis.utility.logging.GameLogging;
 
 /**
  * The main menu of the game
@@ -42,6 +44,10 @@ public final class OasisMainMenu extends ScreenAdapter {
     private final VisTable rootTable;
     // holds elements of the loading game UI
     private final VisTable loadGameTable;
+    // holds the "update available" button when there is one
+    private final VisTable updateRow = new VisTable();
+    private final GameUpdater updater = new GameUpdater();
+    private boolean updating;
 
     public OasisMainMenu(OasisGame game) {
         this.game = game;
@@ -103,7 +109,11 @@ public final class OasisMainMenu extends ScreenAdapter {
         rootTable.row();
         rootTable.add(quitGameButton).width(150);
         rootTable.row();
-        rootTable.add(new VisLabel("MP: " + System.getProperty("mp"), Styles.getMediumWhiteMipMapped()));
+        rootTable.add(updateRow).padTop(8f);
+        rootTable.row();
+        rootTable.add(new VisLabel("Version " + GameUpdater.currentVersion(), Styles.getMediumWhiteMipMapped())).padTop(6f);
+
+        checkForUpdates(style);
 
         assignClickAction(newGameButton, game::enterNewGame);
         assignClickAction(joinServerButton, game::joinLanGame);
@@ -115,6 +125,42 @@ public final class OasisMainMenu extends ScreenAdapter {
         });
 
         assignClickAction(quitGameButton, () -> System.exit(0));
+    }
+
+    /**
+     * Check GitHub for a newer version and, if there is one, show an update button.
+     */
+    private void checkForUpdates(VisImageTextButton.VisImageTextButtonStyle style) {
+        updater.checkAsync().thenAccept(update -> {
+            if (update == null) return;
+            Gdx.app.postRunnable(() -> showUpdateButton(update, style));
+        });
+    }
+
+    private void showUpdateButton(GameUpdater.UpdateInfo update, VisImageTextButton.VisImageTextButtonStyle style) {
+        final VisImageTextButton button = new VisImageTextButton("Update to v" + update.version(), style);
+        button.getLabel().setColor(Color.GOLD);
+        updateRow.clear();
+        updateRow.add(button).width(190);
+
+        assignClickAction(button, () -> {
+            if (updating) return;
+            updating = true;
+            button.setText("Downloading 0%");
+            updater.downloadAndInstall(update, progress ->
+                            Gdx.app.postRunnable(() -> button.setText("Downloading " + (int) (progress * 100) + "%")))
+                    .whenComplete((ignored, error) -> Gdx.app.postRunnable(() -> {
+                        if (error != null) {
+                            GameLogging.exceptionThrown("OasisMainMenu", "Update failed", error);
+                            button.setText("Update failed - retry");
+                            updating = false;
+                        } else {
+                            button.setText("Restarting...");
+                            // the installer waits for us to close, swaps the files, and relaunches
+                            Gdx.app.exit();
+                        }
+                    }));
+        });
     }
 
     /**

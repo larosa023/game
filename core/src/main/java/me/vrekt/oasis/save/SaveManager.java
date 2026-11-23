@@ -30,9 +30,39 @@ public class SaveManager {
 
     private static GameSaveProperties properties;
 
+    /**
+     * Saves live in the user's own folder (not next to the game) so updates can never touch them.
+     * Windows: %APPDATA%\\Oasis\\saves, elsewhere: ~/.oasis/saves
+     */
+    public static final Path SAVE_DIR = resolveSaveDirectory();
+
+    private static Path resolveSaveDirectory() {
+        final String appData = System.getenv("APPDATA");
+        if (appData != null && !appData.isBlank()) return Paths.get(appData, "Oasis", "saves");
+        return Paths.get(System.getProperty("user.home"), ".oasis", "saves");
+    }
+
+    /**
+     * Older builds kept saves in a "saves" folder beside the game. Copy them over once.
+     */
+    private static void migrateOldSaves() {
+        final Path old = Paths.get("saves").toAbsolutePath();
+        if (!Files.isDirectory(old) || old.equals(SAVE_DIR.toAbsolutePath())) return;
+        if (Files.exists(SAVE_DIR.resolve("save_properties.json"))) return;
+        try (var files = Files.list(old)) {
+            for (Path file : (Iterable<Path>) files::iterator) {
+                if (file.toString().endsWith(".json")) Files.copy(file, SAVE_DIR.resolve(file.getFileName()));
+            }
+            GameLogging.info("SaveManager", "Migrated old saves from %s", old);
+        } catch (IOException exception) {
+            GameLogging.exceptionThrown("SaveManager", "Failed to migrate old saves", exception);
+        }
+    }
+
     public static void init() {
         try {
-            Files.createDirectories(Paths.get("saves"));
+            Files.createDirectories(SAVE_DIR);
+            migrateOldSaves();
         } catch (IOException exception) {
             GameLogging.exceptionThrown("SaveManager", "Failed to create new directory for saves", exception);
         }
@@ -48,7 +78,7 @@ public class SaveManager {
         name = name == null ? properties.getSlotName(slot) : name;
         final long now = System.currentTimeMillis();
         try {
-            Path path = Paths.get("saves/" + name + ".json");
+            Path path = SAVE_DIR.resolve(name + ".json");
             if (!Files.exists(path)) Files.createFile(path);
 
             try (FileWriter writer = new FileWriter(path.toFile(), false)) {
@@ -70,7 +100,7 @@ public class SaveManager {
     public static void readSaveGameProperties() {
         if (properties != null) return;
 
-        Path path = Paths.get("saves/save_properties.json");
+        Path path = SAVE_DIR.resolve("save_properties.json");
         if (Files.exists(path)) {
             try {
                 try (FileReader reader = new FileReader(path.toFile())) {
@@ -94,7 +124,7 @@ public class SaveManager {
      */
     private static void writeRefreshGameSaveProperties() {
         try {
-            Path path = Paths.get("saves/save_properties.json");
+            Path path = SAVE_DIR.resolve("save_properties.json");
             if (!Files.exists(path)) Files.createFile(path);
 
             try (FileWriter writer = new FileWriter(path.toFile(), false)) {
@@ -113,7 +143,7 @@ public class SaveManager {
      */
     private static void writeGameSaveProperties(int slot, GameSave save) {
         try {
-            Path path = Paths.get("saves/save_properties.json");
+            Path path = SAVE_DIR.resolve("save_properties.json");
             if (!Files.exists(path)) Files.createFile(path);
             if (properties == null) properties = new GameSaveProperties();
 
@@ -135,7 +165,7 @@ public class SaveManager {
      */
     public static GameSave load(int slot) {
         readSaveGameProperties();
-        Path path = Paths.get("saves/" + properties.getSlotName(slot) + ".json");
+        Path path = SAVE_DIR.resolve(properties.getSlotName(slot) + ".json");
         if (Files.exists(path)) {
             final long now = System.currentTimeMillis();
             try {
@@ -158,7 +188,7 @@ public class SaveManager {
      * @param slot slot
      */
     public static void delete(int slot) {
-        Path path = Paths.get("saves/" + properties.getSlotName(slot) + ".json");
+        Path path = SAVE_DIR.resolve(properties.getSlotName(slot) + ".json");
         properties.delete(slot);
 
         if (Files.exists(path)) {

@@ -161,7 +161,7 @@ public final class OasisGame extends Game {
      */
     private void createDefaultWorlds() {
         worldManager.addWorld(new NewGameWorld(this, player));
-        worldManager.addWorld(new MyceliaWorld(this, player));
+        if (asset.hasMap(Asset.MYCELIA_WORLD)) worldManager.addWorld(new MyceliaWorld(this, player));
     }
 
     /**

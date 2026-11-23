@@ -34,14 +34,14 @@ public final class SoundManager implements Disposable {
      * @return the map or an empty map if there was an exception
      */
     public EnumMap<TileMaterialType, TileMaterialSound> loadSounds() {
-        final FileHandle handle = Gdx.files.internal("assets/sound/json/tile_material_sounds.json");
+        final FileHandle handle = Gdx.files.internal("sound/json/tile_material_sounds.json");
         try {
-            try (FileReader reader = new FileReader(handle.file())) {
+            try (java.io.Reader reader = handle.reader("UTF-8")) {
                 Type type = new TypeToken<EnumMap<TileMaterialType, TileMaterialSound>>() {
                 }.getType();
                 return GSON.fromJson(reader, type);
             }
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             GameLogging.exceptionThrown("SoundManager", "Failed to load material sound file!", exception);
         }
         return new EnumMap<>(TileMaterialType.class);

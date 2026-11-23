@@ -61,7 +61,7 @@ public final class LyraEntity extends EntityInteractable {
         animationComponent = new EntityAnimationComponent();
         entity.add(animationComponent);
 
-        this.dialogue = EntityDialogueLoader.loadSync("assets/dialog/lyra_dialog.json");
+        this.dialogue = EntityDialogueLoader.loadSync("dialog/lyra_dialog.json");
         this.dialogue.setOwner(this);
         activeEntry = dialogue.getEntry("lyra:dialog_stage_0").getEntry();
 

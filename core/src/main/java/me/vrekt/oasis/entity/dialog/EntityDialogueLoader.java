@@ -5,8 +5,6 @@ import com.badlogic.gdx.files.FileHandle;
 import me.vrekt.oasis.save.SaveManager;
 import me.vrekt.oasis.utility.logging.GameLogging;
 
-import java.io.FileReader;
-import java.io.IOException;
 
 /**
  * Loads entity dialog from the provided JSON file
@@ -22,10 +20,10 @@ public final class EntityDialogueLoader {
     public static Dialogue loadSync(String file) {
         final FileHandle handle = Gdx.files.internal(file);
         try {
-            try (FileReader reader = new FileReader(handle.file())) {
+            try (java.io.Reader reader = handle.reader("UTF-8")) {
                 return SaveManager.LOAD_GAME_GSON.fromJson(reader, Dialogue.class);
             }
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             GameLogging.exceptionThrown("EntityDialogLoader", "Failed to read dialog %s", exception, file);
         }
 
