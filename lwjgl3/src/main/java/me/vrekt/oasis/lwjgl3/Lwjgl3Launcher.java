@@ -23,7 +23,11 @@ public class Lwjgl3Launcher {
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         configuration.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL32, 3, 2);
-        //configuration.setWindowedMode(1920, 1080);
+        configuration.setTitle("Oasis");
+        configuration.setWindowedMode(1280, 720);
+        configuration.setResizable(true);
+        configuration.setWindowSizeLimits(640, 480, -1, -1);
+        configuration.setWindowIcon("icons/oasis_128.png", "icons/oasis_64.png", "icons/oasis_32.png", "icons/oasis_16.png");
         return configuration;
     }
 }

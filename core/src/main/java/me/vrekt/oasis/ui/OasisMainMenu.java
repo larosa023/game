@@ -19,6 +19,7 @@ import com.kotcrab.vis.ui.widget.VisImageTextButton;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import me.vrekt.oasis.OasisGame;
+import me.vrekt.oasis.asset.settings.OasisGameSettings;
 import me.vrekt.oasis.asset.sound.Sounds;
 import me.vrekt.oasis.gui.Styles;
 import me.vrekt.oasis.save.GameSaveProperties;
@@ -67,7 +68,9 @@ public final class OasisMainMenu extends ScreenAdapter {
         this.loadGameTable.setFillParent(true);
 
         // add UI components
-        rootTable.add(new VisImage(game.getLogoTexture()));
+        rootTable.add(new VisImage(game.getLogoTexture()))
+                .size(game.getLogoTexture().getWidth() * 2f, game.getLogoTexture().getHeight() * 2f)
+                .padBottom(12f);
         rootTable.row();
 
         initializeMainComponents(Styles.getImageTextButtonStyle());
@@ -83,7 +86,10 @@ public final class OasisMainMenu extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height);
+        ((ScreenViewport) stage.getViewport()).setUnitsPerPixel(OasisGameSettings.uiUnitsPerPixel(height));
+        stage.getViewport().update(width, height, true);
+        parallaxCamera.setToOrtho(false, width * OasisGameSettings.uiUnitsPerPixel(height), height * OasisGameSettings.uiUnitsPerPixel(height));
+        parallaxCamera.position.y = -100;
     }
 
     @Override

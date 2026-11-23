@@ -1,5 +1,7 @@
 package me.vrekt.oasis.gui.guis.hud;
 
+import me.vrekt.oasis.asset.settings.OasisGameSettings;
+
 import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -95,6 +97,8 @@ public final class GameHudGui extends Gui {
 
     @Override
     public void timedUpdate(float tick) {
+        debugComponentText.setVisible(isShowing && OasisGameSettings.SHOW_FPS);
+        if (!OasisGameSettings.SHOW_FPS) return;
         builder.setLength(0);
         builder.append(FPS)
                 .append(Gdx.graphics.getFramesPerSecond())
@@ -124,7 +128,7 @@ public final class GameHudGui extends Gui {
     public void show() {
         super.show();
 
-        debugComponentText.setVisible(true);
+        debugComponentText.setVisible(OasisGameSettings.SHOW_FPS);
         for (HudComponent component : components.values()) {
             if (component.componentType != HudComponentType.HINT
                     && component.componentType != HudComponentType.ITEM_HINT

@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import me.vrekt.oasis.GameManager;
+import me.vrekt.oasis.asset.settings.DisplaySettings;
 import me.vrekt.oasis.asset.settings.OasisGameSettings;
 import me.vrekt.oasis.gui.Gui;
 import me.vrekt.oasis.gui.GuiManager;
@@ -73,6 +74,32 @@ public final class SettingsWindowGui extends Gui {
         vsyncCheck.setChecked(OasisGameSettings.V_SYNC);
         vsyncContainer.add(vsyncCheck).left();
 
+        final VisTable fullscreenContainer = new VisTable();
+        fullscreenContainer.left();
+        fullscreenContainer.setBackground(Styles.getTheme());
+        final VisCheckBox fullscreenCheck = new VisCheckBox("Fullscreen (F11)", Styles.getCheckBoxStyle());
+        fullscreenCheck.setChecked(DisplaySettings.isFullscreen());
+        fullscreenContainer.add(fullscreenCheck).left();
+        fullscreenCheck.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if (fullscreenCheck.isChecked() != DisplaySettings.isFullscreen()) DisplaySettings.setFullscreen(fullscreenCheck.isChecked());
+            }
+        });
+
+        final VisTable fpsContainer = new VisTable();
+        fpsContainer.left();
+        fpsContainer.setBackground(Styles.getTheme());
+        final VisCheckBox fpsCheck = new VisCheckBox("Show FPS and debug info (F3)", Styles.getCheckBoxStyle());
+        fpsCheck.setChecked(OasisGameSettings.SHOW_FPS);
+        fpsContainer.add(fpsCheck).left();
+        fpsCheck.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                DisplaySettings.setShowFps(fpsCheck.isChecked());
+            }
+        });
+
         final VisCheckBox autoSaveCheck = new VisCheckBox("Auto Save", Styles.getCheckBoxStyle());
         autoSaveCheck.setChecked(OasisGameSettings.AUTO_SAVE);
         autoSaveContainer.add(autoSaveCheck).left();
@@ -113,6 +140,10 @@ public final class SettingsWindowGui extends Gui {
         gameSettingsTable.add(multiplayerGameContainer).fillX();
         gameSettingsTable.row().padTop(4f);
         gameSettingsTable.add(vsyncContainer).fillX();
+        gameSettingsTable.row().padTop(4f);
+        gameSettingsTable.add(fullscreenContainer).fillX();
+        gameSettingsTable.row().padTop(4f);
+        gameSettingsTable.add(fpsContainer).fillX();
         gameSettingsTable.row().padTop(4f);
         gameSettingsTable.add(autoSaveContainer).fillX();
         gameSettingsTable.row().padTop(4f);

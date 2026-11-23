@@ -163,6 +163,7 @@ public final class MapRenderer implements Disposable {
      * @param height the height
      */
     public void resize(int width, int height) {
+        viewport.setUnitsPerPixel(OasisGameSettings.VIEW_TILES_HIGH / Math.max(1, height));
         viewport.update(width, height, false);
         // camera.setToOrtho(false, width / 16f / 2f, height / 16f / 2f);
     }

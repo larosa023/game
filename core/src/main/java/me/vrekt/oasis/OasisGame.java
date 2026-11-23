@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.Collections;
 import com.kotcrab.vis.ui.VisUI;
 import me.vrekt.oasis.asset.game.Asset;
 import me.vrekt.oasis.asset.settings.OasisGameSettings;
+import me.vrekt.oasis.asset.settings.DisplaySettings;
+import me.vrekt.oasis.asset.settings.GlobalHotkeys;
 import me.vrekt.oasis.asset.settings.OasisKeybindings;
 import me.vrekt.oasis.asset.sound.SoundManager;
 import me.vrekt.oasis.entity.Entities;
@@ -98,7 +100,7 @@ public final class OasisGame extends Game {
     @Override
     public void create() {
         GameLogging.info(this, "Starting game, version: %s", GAME_VERSION);
-        logoTexture = new Texture(Gdx.files.internal("ui/em_logo2.png"));
+        logoTexture = new Texture(Gdx.files.internal("ui/oasis_logo.png"));
 
         // set main thread ID for checking later.
         GameValidation.mainThreadId = Thread.currentThread().threadId();
@@ -133,7 +135,9 @@ public final class OasisGame extends Game {
 
         ItemRegistry.registerItems();
         multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(new GlobalHotkeys());
         Gdx.input.setInputProcessor(multiplexer);
+        DisplaySettings.applySaved();
     }
 
     /**

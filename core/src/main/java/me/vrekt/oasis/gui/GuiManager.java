@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import me.vrekt.oasis.asset.settings.OasisGameSettings;
 import com.kotcrab.vis.ui.widget.VisTable;
 import me.vrekt.oasis.GameManager;
 import me.vrekt.oasis.OasisGame;
@@ -85,7 +86,7 @@ public final class GuiManager implements Disposable {
         final ScreenViewport viewport = new ScreenViewport();
 
         stage = new Stage(viewport);
-        stage.setDebugAll(true);
+        stage.setDebugAll(false);
         stack = new Stack();
 
         stack.setFillParent(true);
@@ -297,6 +298,7 @@ public final class GuiManager implements Disposable {
      * @param height height
      */
     public void resize(int width, int height) {
+        ((ScreenViewport) stage.getViewport()).setUnitsPerPixel(OasisGameSettings.uiUnitsPerPixel(height));
         stage.getViewport().update(width, height, true);
         guis.values().forEach(gui -> gui.resize(width, height));
     }
